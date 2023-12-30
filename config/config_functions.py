@@ -17,7 +17,7 @@ def carrega_usuarios():
 
 
 #Adiciona o usuário marcado na lista
-def save_user( client, message, database, database_conn, table_name ):
+def save_user( client, message, my_message, database, database_conn, table_name ):
     
     if message.reply_to_message and message.reply_to_message.from_user.id:
 
@@ -26,7 +26,7 @@ def save_user( client, message, database, database_conn, table_name ):
             user_id = str(message.reply_to_message.from_user.id)
             group_name = message.chat.title
             username = message.reply_to_message.from_user.username
-            atividade = "cheer"
+            reaction_type = my_message[1]
 
             database.execute( f"SELECT * FROM {table_name} WHERE idgroup = '{chat_id}' AND userid = '{user_id}'" )
             result = database.fetchone()
@@ -37,7 +37,7 @@ def save_user( client, message, database, database_conn, table_name ):
             
             else:
                 
-                database.execute( f"INSERT INTO {table_name}(nome, idgroup, username, userid, atividade) VALUES ( '{group_name}', '{chat_id}', '{username}', '{user_id}', '{atividade}' )" )
+                database.execute( f"INSERT INTO {table_name}(nome, idgroup, username, userid, reaction_type) VALUES ( '{group_name}', '{chat_id}', '{username}', '{user_id}', '{reaction_type}' )" )
 
                 database_conn.commit()
                 
@@ -51,8 +51,8 @@ def save_user( client, message, database, database_conn, table_name ):
         
 
 
-def is_command( mensagem ):#verify if the send message is a command
+def is_command( message ):#verify if the send message is a command
     
-    if mensagem == '/addUser':
+    if '/addUser' in message:
         
         return True
